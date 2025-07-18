@@ -30,6 +30,12 @@ const Layout = ({ children }) => {
       icon: <UserOutlined />,
       label: <Link to="/users">用户管理</Link>,
     },
+    {
+      key: '/roles',
+      icon: <UserOutlined />,
+      label: <Link to="/roles">角色管理</Link>,
+    },
+
   ];
 
   return (

@@ -6,6 +6,7 @@ import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import UserManagement from './pages/UserManagement';
 import './App.css';
+import Roles from './pages/Roles';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/users" element={<UserManagement />} />
+            <Route path="/roles" element={<Roles />} />
           </Routes>
         </Layout>
       </Router>
