@@ -15,6 +15,15 @@ import {
     Card,
     Dropdown
 } from 'antd';
+import {
+    PlusOutlined,
+    EditOutlined,
+    DeleteOutlined,
+    SearchOutlined,
+    FilterOutlined,
+    DownOutlined
+} from '@ant-design/icons';
+import { apiService } from '../services/api';
 
 
 const Roles = () => {
@@ -28,6 +37,27 @@ const Roles = () => {
     const [nameSearch, setNameSearch] = useState('');
 
 
+
+    // 状态筛选菜单
+    const statusFilterMenu = {
+        items: [
+            {
+                key: '',
+                label: '全部状态',
+                onClick: () => setStatusFilter('')
+            },
+            {
+                key: 'active',
+                label: '活跃',
+                onClick: () => setStatusFilter('active')
+            },
+            {
+                key: 'inactive',
+                label: '非活跃',
+                onClick: () => setStatusFilter('inactive')
+            }
+        ]
+    };
 
     // 表格列定义
     const columns = [
@@ -46,7 +76,49 @@ const Roles = () => {
             title: '描述',
             dataIndex: 'describe',
             key: 'describe',
-        }
+        },
+        {
+            title: (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span>状态</span>
+                    <Dropdown
+                        menu={statusFilterMenu}
+                        trigger={['click']}
+                        placement="bottomRight"
+                    >
+                        <Button
+                            type="text"
+                            size="small"
+                            icon={<FilterOutlined />}
+                            style={{
+                                color: statusFilter ? '#1677ff' : '#999',
+                                padding: '2px 4px'
+                            }}
+                        >
+                            <DownOutlined style={{ fontSize: '10px' }} />
+                        </Button>
+                    </Dropdown>
+                    {statusFilter && (
+                        <span style={{
+                            fontSize: '12px',
+                            color: '#1677ff',
+                            marginLeft: 4
+                        }}>
+                            ({statusFilter === 'active' ? '活跃' : '非活跃'})
+                        </span>
+                    )}
+                </div>
+            ),
+            dataIndex: 'status',
+            key: 'status',
+            render: (status) => (
+                <span style={{
+                    color: status === 'active' ? '#52c41a' : '#999'
+                }}>
+                    {status === 'active' ? '活跃' : '非活跃'}
+                </span>
+            ),
+        },
     ]
 
     //获取用户列表
@@ -57,26 +129,15 @@ const Roles = () => {
     // 筛选和搜索效果
     useEffect(() => {
         filterRoles();
-    }, [roles, nameSearch]);
+    }, [roles, nameSearch, statusFilter]);
 
     // 获取数据
     const fetchRoles = async () => {
         try {
             setLoading(true);
-            const rolesData = [{
-                "id": 1,
-                "name": "admin",
-                "describe": "超级管理员"
-            },
-            {
-                "id": 2,
-                "name": "role1",
-                "describe": "角色1"
-            }
-            ]
+            const rolesData = await apiService.getRoles();
             setRoles(rolesData)
         } catch (error) {
-            message.error('获取用户列表失败');
             console.error('获取用户列表失败:', error);
         } finally {
             setLoading(false);
@@ -87,6 +148,11 @@ const Roles = () => {
     // 筛选角色数据
     const filterRoles = () => {
         let filtered = roles;
+
+        // 按状态筛选
+        if (statusFilter) {
+            filtered = filtered.filter(role => role.status === statusFilter);
+        }
 
         // 名称搜索过滤
         if (nameSearch) {

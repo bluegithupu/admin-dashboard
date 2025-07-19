@@ -135,7 +135,29 @@ export const apiService = {
     await new Promise(resolve => setTimeout(resolve, 500));
     
     return { success: true, id };
-  }
+  },
+
+
+    // 获取角色列表
+    getRoles: async () => {
+      await new Promise(resolve => setTimeout(resolve, 800));
+  
+      return [{
+        "id": 1,
+        "status": "active",
+        "name": "admin",
+        "describe": "超级管理员"
+    },
+    {
+        "id": 2,
+        "status": "inactive",
+        "name": "role1",
+        "describe": "角色1"
+    }
+    ]
+    }
+
+
 };
 
 // 使用真实API的示例（可以根据需要替换）
@@ -171,5 +193,8 @@ export const realApiService = {
     }
   }
 };
+
+
+
 
 export default api;
